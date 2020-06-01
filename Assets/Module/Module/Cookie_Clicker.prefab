@@ -3665,7 +3665,6 @@ MonoBehaviour:
   Multiplier_index: 00000000
   isMultiON: 0
   Rebirths: 0
-  _activeMultiplier: 0
 --- !u!114 &114812395410026546
 MonoBehaviour:
   m_ObjectHideFlags: 1

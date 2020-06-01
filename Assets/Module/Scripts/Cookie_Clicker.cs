@@ -55,7 +55,7 @@ public class Cookie_Clicker : MonoBehaviour {
     public long Desired_Cookies = 0;
     public int Desired_Achievement_type = 0;
     public int Desired_Achievement_num = 0;
-    public float InitialTime = 0;
+    public int InitialTime = 0;
 
     //Building
 
@@ -99,7 +99,7 @@ public class Cookie_Clicker : MonoBehaviour {
 	// Use this for initialization
 	void Start () {
         StartCoroutine(UpdateHighlights());
-        InitialTime = Bomb.GetTime();
+        InitialTime = (int)Bomb.GetTime();
         calcscript = new Calculation_Script(this);
         CalculateDesiredStuff();
         CookieButton.OnInteract += delegate { ClicksaidButton(); return false; };
@@ -115,7 +115,7 @@ public class Cookie_Clicker : MonoBehaviour {
 	
 	// Update is called once per frame
 	void Update () {
-		if(TotalCookies >= Desired_Cookies && isAchieved[Desired_Achievement_type-1][Desired_Achievement_num-1] && !_modsolved){
+		if(TotalCookies >= Desired_Cookies && isAchieved[Desired_Achievement_type-1][Desired_Achievement_num-1] && !_modsolved && !IsAnimating){
             _modsolved = true;
             GetComponent<KMBombModule>().HandlePass();
             StopAllCoroutines();
@@ -215,7 +215,7 @@ public class Cookie_Clicker : MonoBehaviour {
         }
     }
 
-    public int _activeMultiplier = 0;
+    int _activeMultiplier = -1;
     void SetMultiplier(KMSelectable Multi){
         var index = Array.IndexOf(MultiplierButtons, Multi);
         if (Multiplier_index.All(x => !x)){
@@ -247,6 +247,7 @@ public class Cookie_Clicker : MonoBehaviour {
 
     public void OnButtonRelease(){
         if (IsAnimating) { return; }
+        if (_activeMultiplier == -1) { return; }
         StopAllCoroutines();
         if (holding){
             if (TotalCookies < Convert.ToDouble(Pay_Amount_text.text)) { GetComponent<KMBombModule>().HandleStrike();Debug.LogFormat("[Cookie Clicker #{0}]Not enough cookies to buy the desired building, please gather more and try again!", _modID); holding = false; audio.PlaySoundAtTransform("cookieBreak", this.transform); return; }
@@ -605,5 +606,174 @@ public class Cookie_Clicker : MonoBehaviour {
         Achi_Sprite.enabled = false;
         IsAnimating = false;
         yield break;
+    }
+
+#pragma warning disable 414
+    private string TwitchHelpMessage = "'!{0} tap #' to click the cookie a number of times where # being any number within reasonable range | '!{0} Buildings' to go to the Buildings menu | '!{0} Rebirth' to click on the Rebirth button | '!{0} buy x/none' to buy a building while in the Buidlings menu and x being the buildings name and nothing there buys|'!{0} set x#' to select a multiplier for how much to buy where # is 1, 10, 100, 1000 | '!{0} Return' to go back to the Cookie.";
+#pragma warning restore 414
+
+    IEnumerator ProcessTwitchCommand(string command)
+    {
+        command = command.Trim();
+        string[] parameters = command.Split(new char[] { ' ' }, StringSplitOptions.RemoveEmptyEntries);
+        if(parameters[0].ToLower() == "tap"){
+            yield return null;
+            var count = 0;
+            do{
+                yield return "trycancel Cookie Clicking is Cancelled";
+                CookieButton.OnInteract();
+                count++;
+                yield return new WaitForSeconds(0.01f);
+            } while (!(count >= int.Parse(parameters[1])));
+        }
+        if(parameters[0].ToLower() == "buildings"){
+            yield return null;
+            Buildings.OnInteract();
+        }
+        if(parameters[0].ToLower() == "set"){
+            if(parameters[1].ToLower() == "x1"){
+                yield return null;
+                MultiplierButtons[0].OnInteract();
+            }
+            if (parameters[1].ToLower() == "x10")
+            {
+                yield return null;
+                MultiplierButtons[1].OnInteract();
+            }
+            if (parameters[1].ToLower() == "x100")
+            {
+                yield return null;
+                MultiplierButtons[2].OnInteract();
+            }
+            if (parameters[1].ToLower() == "x1000")
+            {
+                yield return null;
+                MultiplierButtons[3].OnInteract();
+            }
+        }
+        if(parameters[0].ToLower() == "buy"){
+            yield return null;
+            if(parameters.Length == 1){
+                holding = true;
+                Buildings_Display.OnInteractEnded();
+                holding = false;
+                yield break;
+            }
+            switch (parameters[1].ToLower()){
+                case "grandma":
+                    Building_Counter = Array.IndexOf(Buildings_Names, Buildings_Text.text);
+                    while(Building_Counter != Array.IndexOf(Buildings_Names, "Grandma")){
+                        Buildings_Display.OnInteractEnded();
+                        yield return null;
+                    }
+                    break;
+                case "farm":
+                    Building_Counter = Array.IndexOf(Buildings_Names, Buildings_Text.text);
+                    while (Building_Counter != Array.IndexOf(Buildings_Names, "Farm"))
+                    {
+                        Buildings_Display.OnInteractEnded();
+                        yield return null;
+                    }
+                    break;
+                case "mine":
+                    Building_Counter = Array.IndexOf(Buildings_Names, Buildings_Text.text);
+                    while (Building_Counter != Array.IndexOf(Buildings_Names, "Mine"))
+                    {
+                        Buildings_Display.OnInteractEnded();
+                        yield return null;
+                    }
+                    break;
+                case "factory":
+                    Building_Counter = Array.IndexOf(Buildings_Names, Buildings_Text.text);
+                    while (Building_Counter != Array.IndexOf(Buildings_Names, "Factory"))
+                    {
+                        Buildings_Display.OnInteractEnded();
+                        yield return null;
+                    }
+                    break;
+                case "bank":
+                    Building_Counter = Array.IndexOf(Buildings_Names, Buildings_Text.text);
+                    while (Building_Counter != Array.IndexOf(Buildings_Names, "Bank"))
+                    {
+                        Buildings_Display.OnInteractEnded();
+                        yield return null;
+                    }
+                    break;
+                case "temple":
+                    Building_Counter = Array.IndexOf(Buildings_Names, Buildings_Text.text);
+                    while (Building_Counter != Array.IndexOf(Buildings_Names, "Temple"))
+                    {
+                        Buildings_Display.OnInteractEnded();
+                        yield return null;
+                    }
+                    break;
+                case "wizard tower":
+                    Building_Counter = Array.IndexOf(Buildings_Names, Buildings_Text.text);
+                    while (Building_Counter != Array.IndexOf(Buildings_Names, "Wizard Tower"))
+                    {
+                        Buildings_Display.OnInteractEnded();
+                        yield return null;
+                    }
+                    break;
+                case "shipment":
+                    Building_Counter = Array.IndexOf(Buildings_Names, Buildings_Text.text);
+                    while (Building_Counter != Array.IndexOf(Buildings_Names, "Shipment"))
+                    {
+                        Buildings_Display.OnInteractEnded();
+                        yield return null;
+                    }
+                    break;
+                case "alchemy lab":
+                    Building_Counter = Array.IndexOf(Buildings_Names, Buildings_Text.text);
+                    while (Building_Counter != Array.IndexOf(Buildings_Names, "Alchemy Lab"))
+                    {
+                        Buildings_Display.OnInteractEnded();
+                        yield return null;
+                    }
+                    break;
+                case "portal":
+                    Building_Counter = Array.IndexOf(Buildings_Names, Buildings_Text.text);
+                    while (Building_Counter != Array.IndexOf(Buildings_Names, "Portal"))
+                    {
+                        Buildings_Display.OnInteractEnded();
+                        yield return null;
+                    }
+                    break;
+                case "time machine":
+                    Building_Counter = Array.IndexOf(Buildings_Names, Buildings_Text.text);
+                    while (Building_Counter != Array.IndexOf(Buildings_Names, "Time Machine"))
+                    {
+                        Buildings_Display.OnInteractEnded();
+                        yield return null;
+                    }
+                    break;
+                case "antimater condensor":
+                    Building_Counter = Array.IndexOf(Buildings_Names, Buildings_Text.text);
+                    while (Building_Counter != Array.IndexOf(Buildings_Names, "Antimater\n Condensor"))
+                    {
+                        Buildings_Display.OnInteractEnded();
+                        yield return null;
+                    }
+                    break;
+                case "prism":
+                    Building_Counter = Array.IndexOf(Buildings_Names, Buildings_Text.text);
+                    while (Building_Counter != Array.IndexOf(Buildings_Names, "Prism"))
+                    {
+                        Buildings_Display.OnInteractEnded();
+                        yield return null;
+                    }
+                    break;
+                default:
+                    break;
+            }
+        }
+        if (parameters[0].ToLower() == "rebirth"){
+            yield return null;
+            Rebirth.OnInteract();
+        }
+        if(parameters[0].ToLower() == "return"){
+            yield return null;
+            Return_Button.OnInteract();
+        }
     }
 }
