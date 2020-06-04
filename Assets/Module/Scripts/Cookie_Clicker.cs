@@ -64,7 +64,7 @@ public class Cookie_Clicker : MonoBehaviour {
     public int[] Building_Quantity = new int[] { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 };
     long[] Buildings_BaseCost = new long[] {50,550, 8000, 13000, 140000, 2000000, 330000000, 510000000, 7500000000, 10000000000, 140000000000, 170000000000, 2100000000000 };
 
-    string[] Buildings_Names = new string[] { "Grandma", "Farm", "Mine", "Factory", "Bank", "Temple", "Wizard Tower", "Shipment", "Alchemy Lab", "Portal", "Time Machine", "Antimater\n Condensor", "Prism" };
+    string[] Buildings_Names = new string[] { "Grandma", "Farm", "Mine", "Factory", "Bank", "Temple", "Wizard Tower", "Shipment", "Alchemy Lab", "Portal", "Time Machine", "Antimatter\n Condensor", "Prism" };
     bool[][] isAchieved = new bool[14][]
     {
         new bool[]{ false,false,false,false,false,false,false,false,false,false,false,false,false},
@@ -247,7 +247,7 @@ public class Cookie_Clicker : MonoBehaviour {
 
     public void OnButtonRelease(){
         if (IsAnimating) { return; }
-        if (_activeMultiplier == -1) { return; }
+        if (_activeMultiplier == -1) { holding = false;  return; }
         StopAllCoroutines();
         if (holding){
             if (TotalCookies < Convert.ToDouble(Pay_Amount_text.text)) { GetComponent<KMBombModule>().HandleStrike();Debug.LogFormat("[Cookie Clicker #{0}]Not enough cookies to buy the desired building, please gather more and try again!", _modID); holding = false; audio.PlaySoundAtTransform("cookieBreak", this.transform); return; }
@@ -707,7 +707,7 @@ public class Cookie_Clicker : MonoBehaviour {
                         yield return null;
                     }
                     break;
-                case "wizard tower":
+                case "wizardtower":
                     Building_Counter = Array.IndexOf(Buildings_Names, Buildings_Text.text);
                     while (Building_Counter != Array.IndexOf(Buildings_Names, "Wizard Tower"))
                     {
@@ -723,7 +723,7 @@ public class Cookie_Clicker : MonoBehaviour {
                         yield return null;
                     }
                     break;
-                case "alchemy lab":
+                case "alchemylab":
                     Building_Counter = Array.IndexOf(Buildings_Names, Buildings_Text.text);
                     while (Building_Counter != Array.IndexOf(Buildings_Names, "Alchemy Lab"))
                     {
@@ -739,7 +739,7 @@ public class Cookie_Clicker : MonoBehaviour {
                         yield return null;
                     }
                     break;
-                case "time machine":
+                case "timemachine":
                     Building_Counter = Array.IndexOf(Buildings_Names, Buildings_Text.text);
                     while (Building_Counter != Array.IndexOf(Buildings_Names, "Time Machine"))
                     {
@@ -747,9 +747,9 @@ public class Cookie_Clicker : MonoBehaviour {
                         yield return null;
                     }
                     break;
-                case "antimater condensor":
+                case "antimattercondensor":
                     Building_Counter = Array.IndexOf(Buildings_Names, Buildings_Text.text);
-                    while (Building_Counter != Array.IndexOf(Buildings_Names, "Antimater\n Condensor"))
+                    while (Building_Counter != Array.IndexOf(Buildings_Names, "Antimatter\n Condensor"))
                     {
                         Buildings_Display.OnInteractEnded();
                         yield return null;
