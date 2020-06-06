@@ -542,12 +542,15 @@ public class Cookie_Clicker : MonoBehaviour {
                     Desired_Achievement_type += 11;
                     break;
                 default:
-                    Desired_Achievement_type += 15;
+                    Desired_Achievement_type = 1;
                     break;
             }
         }
+        if (Bomb.GetIndicators().Count() == 0)
+        {
+            Desired_Achievement_type = 1;
+        }
         Desired_Achievement_type = Desired_Achievement_type % 14 == 0 ? 1 : Desired_Achievement_type % 14;
-
         foreach(var ports in Bomb.GetPorts()){
             switch (ports){
                 case "DVI":
@@ -573,7 +576,10 @@ public class Cookie_Clicker : MonoBehaviour {
                     break;
             }
         }
-
+        if(Bomb.GetPortCount() == 0)
+        {
+            Desired_Achievement_num = 8;
+        }
         Desired_Achievement_num = Desired_Achievement_num % calcscript.Achievements[Desired_Achievement_type-1].Length == 0 ? 1 : Desired_Achievement_num % calcscript.Achievements[Desired_Achievement_type-1].Length;
         Debug.LogFormat("[Cookie Clicker #{0}] Welcome to Cookie Clicker, Today you are required to get this type of achievement {1} with this name {2} and this much cookies {3}!!!",_modID,Desired_Achievement_type == 1 ? "Total Cookies":Buildings_Names[Desired_Achievement_type-2],calcscript.GetAchievement(Desired_Achievement_type-1,Desired_Achievement_num-1),calcscript.ConvertToScientific(Desired_Cookies));
     }
